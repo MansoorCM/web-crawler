@@ -33,7 +33,28 @@ function getURLsFromHTML(htmlBody, baseURL){
     return urls
   }
 
+function crawlPage(url){
+  fetch(url)
+  .then((res) => {
+    if(res.status > 399) {
+      console.log(`Got http error, status code : ${res.status}`)
+      return
+    }
+    const contentType = res.headers.get('Content-Type')
+    if(! contentType.includes('text/html')){
+      console.log(`invalid content type : ${contentType}`)
+      return
+    }
+    return res.text()
+  })
+  .then((jsonData) => console.log(jsonData))
+  .catch((error) => {
+    console.log(error.message)
+  })
+}
+
 module.exports = {
     normalizeURL, 
-    getURLsFromHTML
+    getURLsFromHTML,
+    crawlPage
 } 
