@@ -33,9 +33,25 @@ function getURLsFromHTML(htmlBody, baseURL){
     return urls
   }
 
-function crawlPage(url){
-  fetch(url)
-  .then((res) => {
+async function crawlPage(currentUrl, baseURL, pages){
+  // check currenturl and baseurl have same domains.
+  const currentUrlParsed = new URL(currentUrl)
+  const baseUrlParsed = new URL(baseURL)
+  if( currentUrlParsed.hostname != baseUrlParsed.hostname) {
+    return
+  }
+
+  const normalizedURL = normalizeURL(currentUrl)
+  if (normalizedURL in pages) {  // already crawled.
+    pages[normalizedURL] += 1
+    return
+  }
+  pages[normalizedURL] = 1
+  console.log(`crawling ${currentUrl}...`)
+  let jsonData = ''
+
+  try{
+    const res = await fetch(currentUrl)
     if(res.status > 399) {
       console.log(`Got http error, status code : ${res.status}`)
       return
@@ -45,12 +61,16 @@ function crawlPage(url){
       console.log(`invalid content type : ${contentType}`)
       return
     }
-    return res.text()
-  })
-  .then((jsonData) => console.log(jsonData))
-  .catch((error) => {
+    jsonData = await res.text()
+    
+  }catch(error) {
     console.log(error.message)
-  })
+  }
+  
+  const urls = getURLsFromHTML(jsonData, baseURL)
+  for(const url of urls) {
+    await crawlPage(url, baseURL, pages)
+  }
 }
 
 module.exports = {
