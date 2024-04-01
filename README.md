@@ -10,4 +10,4 @@ Clone the repo and run the following command
 npm run start 'url'
 for eg. npm run start https://wagslane.dev
 
-![](https://github.com/MansoorCM/web-crawler/blob/c723e1ee51c9050add8cc37ef7bb3eff756350f9/demo.gif)
+![](https://github.com/MansoorCM/web-crawler/blob/34c217fa0e26b23c34c92a84e3ca99018bfa412b/demo.gif)
